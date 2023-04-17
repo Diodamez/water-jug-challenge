@@ -1,0 +1,95 @@
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  height: 100%;
+}
+.jug_container {
+  text-align: center;
+}
+.jug {
+  width: 112px;
+  height: 144px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  border-radius: 8px 8px 24px 24px;
+  margin: auto;
+  margin-top: 8px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.input {
+  background-color: transparent;
+  width: 70%;
+  height: 50%;
+  font-size: 48px;
+  text-align: center;
+  color: #fff;
+  border: solid 2px #fff;
+  border-radius: 8px;
+  outline: none;
+}
+.input::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgb(209 213 219);
+  opacity: 1; /* Firefox */
+}
+
+.input:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: rgb(209 213 219);
+}
+
+.input::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: rgb(209 213 219);
+}
+
+.submit {
+  margin-top: 24px;
+  text-align: center;
+}
+.submit button {
+  padding: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #2295f2;
+  border: solid 2px #2295f2;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+  color: #fff;
+}
+.submit button:hover {
+  background-color: #3e51b5;
+  border: solid 2px #2295f2;
+  color: #fff;
+  transition: 0.3s;
+}
+.error {
+  margin-top: 24px;
+  text-align: center;
+  color: red;
+}
+.result {
+  margin-top: 24px;
+  text-align: center;
+}
+.result h4 {
+  margin-bottom: 8px;
+}
