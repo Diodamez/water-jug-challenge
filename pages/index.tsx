@@ -2,6 +2,8 @@ import Head from "next/head";
 import { useRef, useState } from "react";
 import styles from "@/styles/index.module.css";
 
+type JugNames = "x" | "y";
+
 interface Jugs {
   x: number;
   y: number;
@@ -10,6 +12,10 @@ interface Jugs {
 
 export default function Home() {
   const [path, setPath] = useState<Jugs[]>([]);
+  const [jugs, setJugs] = useState<{
+    from: JugNames;
+    to: JugNames;
+  }>();
   const [error, setError] = useState<string>("");
 
   const bucketX = useRef<HTMLInputElement>(null);
@@ -22,7 +28,13 @@ export default function Home() {
     return gcd(b, a % b);
   };
 
-  const pour = (max_x: number, max_y: number, z: number) => {
+  const pour = (
+    max_x: number,
+    max_y: number,
+    z: number,
+    from: JugNames,
+    to: JugNames
+  ) => {
     // Initialize current amount of water in source and destination jugs
     const path: Jugs[] = [];
     let x = max_x;
@@ -32,7 +44,7 @@ export default function Home() {
     path.push({
       x,
       y,
-      explanation: "Fill bucket x",
+      explanation: `Fill bucket ${from}`,
     });
 
     // Break the loop when either of the two jugs has z litre water
@@ -48,7 +60,7 @@ export default function Home() {
       path.push({
         x,
         y,
-        explanation: "Transfer bucket x to bucket y",
+        explanation: `Transfer bucket ${from} to bucket ${to}`,
       });
 
       if (x == z || y == z) break;
@@ -59,7 +71,7 @@ export default function Home() {
         path.push({
           x,
           y,
-          explanation: "Fill bucket x",
+          explanation: `Fill bucket ${from}`,
         });
       }
 
@@ -69,7 +81,7 @@ export default function Home() {
         path.push({
           x,
           y,
-          explanation: "Dump bucket y",
+          explanation: `Dump bucket ${to}`,
         });
       }
     }
@@ -78,16 +90,9 @@ export default function Home() {
 
   // Returns count of minimum steps needed to measure z liter
   const minSteps = (y: number, x: number, z: number) => {
-    // To make sure that y is smaller than x
-    if (y > x) {
-      const t = y;
-      y = x;
-      x = t;
-    }
-
     // For z > x we cant measure the water
     // using the jugs
-    if (z > x) {
+    if (z > x && z > y) {
       setError("No solution");
       return -1;
     }
@@ -102,8 +107,13 @@ export default function Home() {
     // Return minimum two cases:
     // a) Water of x liter jug is poured into y liter jug
     // b) Vice versa of "a"
-    const xToY = pour(x, y, z);
-    const yToX = pour(y, x, z);
+    const xToY = pour(x, y, z, "x", "y");
+    const yToX = pour(y, x, z, "y", "x");
+    setJugs(
+      xToY.length > yToX.length
+        ? { from: "y", to: "x" }
+        : { from: "x", to: "y" }
+    );
     setPath(xToY.length > yToX.length ? yToX : xToY);
     return Math.min(
       xToY.length, // x to y
@@ -148,16 +158,6 @@ export default function Home() {
       </Head>
       <main>
         <form onSubmit={submitHandler}>
-          {/* <div>
-            <input type="number" ref={bucketX} />
-          </div>
-          <div>
-            <input type="number" ref={bucketY} />
-          </div>
-          <div>
-            <input type="number" ref={wanted} />
-          </div> */}
-
           <div className={`${styles.container}`}>
             <div className={`${styles.jug_container}`}>
               <label htmlFor="">Bucket X</label>
@@ -230,8 +230,8 @@ export default function Home() {
                 <tbody>
                   {path.map((value, index) => (
                     <tr key={index}>
-                      <td>{value.x}</td>
-                      <td>{value.y}</td>
+                      <td>{jugs?.from === "x" ? value.x : value.y}</td>
+                      <td>{jugs?.from === "x" ? value.y : value.x}</td>
                       <td>
                         {value.explanation}
                         {index + 1 === path.length && (
